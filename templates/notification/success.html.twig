@@ -1,0 +1,13 @@
+{% extends "base.html.twig" %}
+
+{% block title %}PreisStalker - Du wirst benachrichtigt! (hoffentlich){% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="alert alert-success my-4">
+            <h3><i class="far fa-check"></i> Benachrichtigung erstellt</h3>
+        </div>
+        <h4 class="mb-3">Wir benachrichtigen dich, wenn "{{ notification.product.title }}" unter {{ notification.price }}€ sinkt.</h4>
+        <p>Du erhältst dann ein E-Mail an {{ notification.email }}. Das wars schon!</p>
+    </div>
+{% endblock %}

@@ -1,0 +1,9 @@
+<div class="container mt-4">
+    &copy;
+    {% if "now"|date("Y") == 2017 %}
+        {{ "now"|date("Y") }}
+    {% else %}
+        2017 - {{ "now"|date("Y") }}
+    {% endif %}
+    <a href="https://pascalebeier.de" rel="author">Pascale Beier</a>. Alle Rechte vorbehalten.
+</div>
