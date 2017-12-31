@@ -4,10 +4,16 @@
 
 {% block body %}
     <div class="container">
-        <div class="alert alert-success my-4">
-            <h3><i class="far fa-check"></i> Benachrichtigung erstellt</h3>
+        <div class="card my-4">
+            <div class="card-header text-white bg-success">
+                ✓ Benachrichtigung erstellt
+            </div>
+            <div class="card-body">
+                <p>Wir benachrichtigen dich, wenn <strong>"{{ notification.product.title }}"</strong> unter <strong>
+                        {{ notification.price }}€</strong> sinkt.</p>
+                <p>Du erhältst dann ein E-Mail an <strong>{{ notification.email }}</strong>. Das wars schon!</p>
+            </div>
         </div>
-        <h4 class="mb-3">Wir benachrichtigen dich, wenn "{{ notification.product.title }}" unter {{ notification.price }}€ sinkt.</h4>
-        <p>Du erhältst dann ein E-Mail an {{ notification.email }}. Das wars schon!</p>
+
     </div>
 {% endblock %}
