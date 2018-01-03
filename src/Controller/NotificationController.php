@@ -55,7 +55,7 @@ class NotificationController extends Controller
 
             $notification->setEmail($form->get('email')->getData());
             $notification->setPrice($form->get('price')->getData());
-            $product->setLink($form->get('link')->getData());
+            $product->setLink(strtok($form->get('link')->getData(), '?'));
 
             if (!$this->remoteProductService->findOrCreate($notification, $product)) {
                 $form->get('link')->addError(new FormError('Das ist kein gültiger Amazon-Produktlink'));

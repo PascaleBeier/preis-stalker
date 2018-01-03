@@ -3,6 +3,7 @@
 namespace App\Service\Email;
 
 use App\Entity\Notification;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class NotifcationService
 {
@@ -12,17 +13,20 @@ class NotifcationService
     private $templating;
     /** @var Notification */
     private $notification;
+    /** @var RegistryInterface */
+    private $registry;
 
     /**
      * NotifcationService constructor.
-     *
      * @param \Swift_Mailer $mailer
      * @param \Twig_Environment $templating
+     * @param RegistryInterface $registry
      */
-    public function __construct(\Swift_Mailer $mailer, \Twig_Environment $templating)
+    public function __construct(\Swift_Mailer $mailer, \Twig_Environment $templating, RegistryInterface $registry)
     {
         $this->mailer = $mailer;
         $this->templating = $templating;
+        $this->registry = $registry;
     }
 
     /**
@@ -43,15 +47,24 @@ class NotifcationService
      */
     public function run(array $context = [])
     {
-        return $this
+        $success = $this
             ->mailer
             ->send((new \Swift_Message('PreisStalker Benachrichtigung'))
                 ->setFrom('mail@pascalebeier.de')
                 ->setTo($this->notification->getEmail())
                 ->setBody(
-                     $this->templating->render("emails/notification.html.twig", array_merge($context, ['notification' => $this->notification])),
-                     'text/html'
+                    $this->templating->render("emails/notification.html.twig", array_merge($context, ['notification' => $this->notification])),
+                    'text/html'
                 ));
+
+
+        if ($success > 0) {
+            $em = $this->registry->getManager();
+            $em->remove($this->notification);
+            $em->flush();
+        }
+
+        return $success;
     }
 
 }
