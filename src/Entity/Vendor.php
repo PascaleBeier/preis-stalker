@@ -22,9 +22,9 @@ class Vendor
     private $signature;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text")
      */
-    private $xpath;
+    private $selectors;
 
     /**
      * @ORM\Column(type="string", length=100)
@@ -53,19 +53,19 @@ class Vendor
     }
 
     /**
-     * @return mixed
+     * @param mixed $selectors
      */
-    public function getXpath()
+    public function setSelectors($selectors): void
     {
-        return $this->xpath;
+        $this->selectors = $selectors;
     }
 
     /**
-     * @param mixed $xpath
+     * @return mixed
      */
-    public function setXpath($xpath): void
+    public function getSelectors()
     {
-        $this->xpath = $xpath;
+        return $this->selectors;
     }
 
     /**

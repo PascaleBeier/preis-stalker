@@ -4,35 +4,20 @@ namespace App\Service;
 
 use App\Entity\Notification;
 use App\Entity\Product;
-use App\Repository\ProductRepository;
-use Doctrine\DBAL\Exception\NotNullConstraintViolationException;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Goutte\Client;
-use Doctrine\Common\Persistence\ManagerRegistry;
-use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class RemoteProductService
 {
-	/** @var Client */
 	private $client;
-	/** @var ProductRepository */
-	private $productRepository;
-	/** @var ManagerRegistry */
-	private $manager;
+	private $registry;
 
-    /**
-     * RemoteProductService constructor.
-     *
-     * @param Client $client
-     * @param ProductRepository $productRepository
-     * @param ManagerRegistry $manager
-     */
-    public function __construct(Client $client, ProductRepository $productRepository, ManagerRegistry $manager)
+    public function __construct(Client $client, RegistryInterface $registry)
     {
         $this->client = $client;
-        $this->productRepository = $productRepository;
-        $this->manager = $manager->getManager();
+        $this->registry = $registry;
     }
 
     /**
@@ -75,7 +60,7 @@ class RemoteProductService
     public function findOrCreate(Notification $notification, Product $product)
     {
         try {
-            $product = $this->productRepository->findByLink($product->getLink());
+            $product = $this->registry->getRepository(Product::class)->findByLink($product->getLink());
         } catch (NoResultException|NonUniqueResultException $e) {
             $data = $this->getData($product->getLink());
             if ($data['title'] === null || $data['price'] === null) {
@@ -83,12 +68,12 @@ class RemoteProductService
             }
             $product->setPrice($data['price']);
             $product->setTitle($data['title']);
-            $this->manager->persist($product);
+            $this->registry->getManager()->persist($product);
         }
 
         $notification->setProduct($product);
-        $this->manager->persist($notification);
-        $this->manager->flush();
+        $this->registry->getManager()->persist($notification);
+        $this->registry->getManager()->flush();
 
         return $notification;
     }
@@ -102,7 +87,7 @@ class RemoteProductService
     {
         $data = $this->getData($product->getLink());
 
-        $this->manager->getRepository(Product::class)->updatePrice($product->getId(), $data['price']);
+        $this->registry->getRepository(Product::class)->updatePrice($product->getId(), $data['price']);
     }
 
 }

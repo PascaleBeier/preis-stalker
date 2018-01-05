@@ -40,7 +40,8 @@ class ProductRepository extends ServiceEntityRepository
             ->createQueryBuilder('p')
             ->update('App:Product', 'p')
             ->set('p.price', '?1')->setParameter(1, $price)
-            ->where('p.id = ?2')->setParameter(2, $id)
+            ->set('p.updated_at', '?2')->setParameter(2, (new \DateTime())->format('Y-m-d H:i:s'))
+            ->where('p.id = ?3')->setParameter(3, $id)
             ->getQuery()
             ->getScalarResult();
     }

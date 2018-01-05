@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Money\Money;
 
 /**
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
  */
 class Product
@@ -53,7 +54,7 @@ class Product
     /**
      * @var \DateTime
      *
-     * @Gedmo\Timestampable(on="create")
+     * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $updated_at;
@@ -146,5 +147,20 @@ class Product
         return $this->updated_at;
     }
 
+    /**
+     * @ORM\PrePersist
+     */
+    public function onPrePersist()
+    {
+        $this->created_at = new \DateTime("now");
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function onPreUpdate()
+    {
+        $this->updated_at = new \DateTime("now");
+    }
 
 }
